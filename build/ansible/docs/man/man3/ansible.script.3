@@ -1,0 +1,40 @@
+.TH ANSIBLE.SCRIPT 3 "2013-02-01" "1.0" "ANSIBLE MODULES"
+." generated from library/script
+.SH NAME
+script \- Runs a local script on a remote node
+." ------ DESCRIPTION
+.SH DESCRIPTION
+.PP
+The \fIscript\fR module takes the script name followed by a list of space-delimited arguments. 
+.PP
+The given script will be processed through the shell environment. 
+.PP
+This module does not require python on the remote system, much like the \fIraw\fR module. 
+." ------ OPTIONS
+."
+."
+.SH OPTIONS
+   
+.IP free_form
+path to the local script file followed by optional arguments.(required)."
+."
+." ------ NOTES
+.SH NOTES
+.PP
+It is preferable to write Ansible modules than pushing scripts. Convert your script to an Ansible module for bonus points! 
+."
+."
+." ------ EXAMPLES
+.SH EXAMPLES
+.PP
+Example from Ansible Playbooks
+
+.nf
+action: script /some/local/script.sh --some-arguments 1234
+.fi
+." ------- AUTHOR
+.SH AUTHOR
+Michael DeHaan
+.SH SEE ALSO
+.IR ansible (1),
+.I http://ansible.github.com/modules.html#script

@@ -1,0 +1,49 @@
+.TH ANSIBLE.PKGIN 3 "2013-02-01" "1.0" "ANSIBLE MODULES"
+." generated from library/pkgin
+.SH NAME
+pkgin \- Package manager for SmartOS
+." ------ DESCRIPTION
+.SH DESCRIPTION
+.PP
+Manages SmartOS packages 
+." ------ OPTIONS
+."
+."
+.SH OPTIONS
+   
+.IP name
+name of package to install/remove(required)   
+.IP state
+state of the package
+.IR Choices :
+present,absent. (default: present)."
+."
+." ------ NOTES
+."
+."
+." ------ EXAMPLES
+.SH EXAMPLES
+.PP
+install package foo"
+
+.nf
+pkgin: name=foo state=present
+.fi
+.PP
+remove package foo
+
+.nf
+pkgin: name=foo state=absent
+.fi
+.PP
+remove packages foo and bar
+
+.nf
+pkgin: name=foo,bar state=absent
+.fi
+." ------- AUTHOR
+.SH AUTHOR
+Shaun Zinck
+.SH SEE ALSO
+.IR ansible (1),
+.I http://ansible.github.com/modules.html#pkgin

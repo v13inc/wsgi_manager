@@ -1,0 +1,61 @@
+.TH ANSIBLE.SYSCTL 3 "2013-02-01" "1.0" "ANSIBLE MODULES"
+." generated from library/sysctl
+.SH NAME
+sysctl \- Permit to handle sysctl.conf entries
+." ------ DESCRIPTION
+.SH DESCRIPTION
+.PP
+This module manipulates sysctl entries and performs a \fI/sbin/sysctl -p\fR after changing them. 
+." ------ OPTIONS
+."
+."
+.SH OPTIONS
+   
+.IP checks
+if \fCchecks\fR=\fInone\fR no smart/facultative checks will be madeif \fCchecks\fR=\fIbefore\fR some checks performed before any update (ie. does the sysctl key is writable ?)if \fCchecks\fR=\fIafter\fR some checks performed after an update (ie. does kernel give back the setted value ?)if \fCchecks\fR=\fIboth\fR all the smart checks \fIbefore and after\fR are performed
+.IR Choices :
+none,before,after,both. (default: both)   
+.IP name
+this is the short path, decimal seperated, to the sysctl entry(required)   
+.IP reload
+if \fCreload=yes\fR, performs a \fI/sbin/sysctl -p\fR if the \fCsysctl_file\fR is updatedif \fCreload=no\fR, does not reload \fIsysctl\fR even if the \fCsysctl_file\fR is updated
+.IR Choices :
+yes,no. (default: yes   
+.IP state
+whether the entry should be present or absent
+.IR Choices :
+present,absent. (default: present)   
+.IP sysctl_file
+specifies the absolute path to \fCsysctl.conf\fR, if not /etc/sysctl.conf (default: /etc/sysctl.conf)   
+.IP value
+set the sysctl value to this entry."
+."
+." ------ NOTES
+."
+."
+." ------ EXAMPLES
+.SH EXAMPLES
+.PP
+Set vm.swappiness to 5 in /etc/sysctl.conf
+
+.nf
+sysctl: name=vm.swappiness value=5 state=present
+.fi
+.PP
+Remove kernel.panic entry from /etc/sysctl.conf
+
+.nf
+sysctl: name=kernel.panic state=absent sysctl_file=/etc/sysctl.conf
+.fi
+.PP
+Set kernel.panic to 3 in /tmp/test_sysctl.conf, check if the sysctl key seems writable, but do not reload sysctl, and do not check kernel value after (not needed, because not the real /etc/sysctl.conf updated)
+
+.nf
+sysctl: name=kernel.panic value=3 sysctl_file=/tmp/test_sysctl.conf check=before reload=no
+.fi
+." ------- AUTHOR
+.SH AUTHOR
+David "DaviXX" CHANIAL <david.chanial@gmail.com>
+.SH SEE ALSO
+.IR ansible (1),
+.I http://ansible.github.com/modules.html#sysctl

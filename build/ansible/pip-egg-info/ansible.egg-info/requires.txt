@@ -1,0 +1,3 @@
+paramiko
+jinja2
+PyYAML
