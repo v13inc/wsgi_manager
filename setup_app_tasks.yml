@@ -1,0 +1,28 @@
+---
+- name: create app user
+  action: user name=app comment="App user" shell="/bin/bash"
+
+- name: create log directory
+  action: file dest=/home/app/log state=directory owner=app group=app
+
+- name: create .ssh directory
+  action: file dest=/home/app/.ssh state=directory owner=app group=app mode=700
+
+- name: copy root authorized_keys
+  command: cp /root/.ssh/authorized_keys /home/app/.ssh/authorized_keys
+
+- name: change permissions on authorized_keys
+  file: path=/home/app/.ssh/authorized_keys mode=600 owner=app group=app state=file
+
+- name: create supervisor program config
+  action: template src=templates/supervisor.ini dest=/etc/supervisor/${app_name}.ini
+  notify:
+    - restart supervisord
+
+- name: create nginx site config
+  action: template src=templates/nginx_site.conf dest=/etc/nginx/sites-available/${app_name}.conf
+  notify:
+    - restart nginx
+
+- name: link nginx config
+  action: file src=/etc/nginx/sites-available/${app_name}.conf dest=/etc/nginx/sites-enabled/${app_name}.conf state=link

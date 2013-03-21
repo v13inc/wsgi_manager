@@ -1,0 +1,16 @@
+# 
+
+# deb cdrom:[Debian GNU/Linux 6.0.3 _Squeeze_ - Official amd64 NETINST Binary-1 20111008-19:52]/ squeeze main
+
+#deb cdrom:[Debian GNU/Linux 6.0.3 _Squeeze_ - Official amd64 NETINST Binary-1 20111008-19:52]/ squeeze main
+
+
+deb {{ apt_url }} testing main
+deb-src {{ apt_url }} testing main
+
+deb http://security.debian.org/ testing/updates main
+deb-src http://security.debian.org/ testing/updates main
+
+# testing-updates, previously known as 'volatile'
+deb {{ apt_url }} testing-updates main
+deb-src {{ apt_url }} testing-updates main

@@ -1,0 +1,12 @@
+---
+- name: restart app
+  action: supervisorctl name=${app_name} state=restarted
+  sudo: true
+
+- name: restart nginx
+  action: service name=nginx state=restarted
+  sudo: true
+
+- name: restart supervisord 
+  action: service name=supervisord state=restarted
+  sudo: true
