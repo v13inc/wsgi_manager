@@ -1,0 +1,33 @@
+---
+
+- hosts: webservers
+  user: ubuntu 
+  sudo: true
+  tags:
+    - setup
+
+  vars_files:
+    - app_vars.yml
+    - $app_components
+  
+  handlers:
+    - include: 'app_handlers.yml'
+
+  tasks:
+  - include: setup_server_tasks.yml
+  - include: setup_app_tasks.yml
+
+- hosts: webservers
+  user: app
+  tags:
+    - deploy
+
+  vars_files:
+    - app_vars.yml
+    - $app_components
+
+  handlers:
+    - include: 'app_handlers.yml'
+
+  tasks:
+  - include: deploy_app_tasks.yml

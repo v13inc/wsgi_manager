@@ -1,0 +1,4 @@
+[webservers]
+ec2-54-244-193-12.us-west-2.compute.amazonaws.com
+ec2-54-244-129-62.us-west-2.compute.amazonaws.com
+ec2-54-244-208-22.us-west-2.compute.amazonaws.com

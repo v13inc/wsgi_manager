@@ -1,0 +1,23 @@
+---
+- name: copy app files
+  copy: src=../app/$app_archive dest=/home/app/
+
+- name: extract app archive
+  command: tar xzf $app_archive chdir=/home/app/ creates=src_$app_commit
+
+- name: rename app folder
+  command: mv $app_name src_$app_commit chdir=/home/app/ creates=src_$app_commit
+
+- name: install extra app dependencies
+  apt: pkg=$item state=installed
+  with_items: ${app.dependencies}
+  sudo: true
+
+- name: install dependencies into virtualenv
+  action: pip requirements=/home/app/src_$app_commit/requirements.txt virtualenv=/home/app/env state=present
+
+- name: run bootstrap commands
+  command: /home/app/bootstrap.sh $app_commit
+
+- name: switch app versions
+  command: /home/app/switch_app_version.sh $app_commit
