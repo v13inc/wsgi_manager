@@ -4,13 +4,17 @@ from fabric.utils import puts, indent
 from fabric.context_managers import prefix, settings, cd
 from fabric.contrib.console import confirm
 from fabric import colors
-from boto import ec2
-from os import path
+import boto
+from boto import ec2, rds
+from os import path, urandom
+from hashlib import sha1
 import time
 import ConfigParser
 import yaml
 
-ec2_connection = ec2.get_region('us-west-2').connect()
+region = 'us-west-2'
+ec2_connection = ec2.get_region(region).connect()
+rds_connection = rds.connect_to_region(region)
 
 env.security_group = 'wsgi_test' # wsgi_test
 env.instance_type = 't1.micro'
@@ -33,6 +37,9 @@ def launch(repo = 'https://github.com/mattupstate/ansible-tutorial.git', tags = 
   instances = get_instances(env.name)
   if len(instances) < server_count:
     launch_instances(server_count - len(instances))
+
+  if components.has_key('database'):
+    launch_db()
 
   time.sleep(5)
   puts('Waiting for instance to boot...')
@@ -76,6 +83,29 @@ def launch_instances(num = 1):
     print instance.dns_name
 
   return instances
+
+@task
+def launch_db():
+  user = 'u' + random_string()
+  password = random_string()
+
+  try:
+    db = rds_connection.create_dbinstance(env.name, 5, 'db.m1.small', user, password, security_groups = ['wsgi-test'])
+  except boto.exception.BotoServerError as err:
+    print err.message
+
+  instance = rds_connection.get_all_dbinstances(env.name)[0]
+  import ipdb; ipdb.set_trace()
+  db_info_path = path.join('app', env.name, 'db.yaml')
+  db_info = {
+    'user': user,
+    'password': password,
+    'host': instance.endpoint[0],
+    'port': instance.endpoint[1]
+  }
+
+  with open(db_info_path, 'w') as db_info_file:
+    db_info_file.write(yaml.dump(db_info))
 
 @task
 def update_hosts():
@@ -129,6 +159,9 @@ def log(log = 'application.log'):
 @task
 def reboot():
   sudo('reboot')
+
+def random_string():
+  return sha1(urandom(64)).hexdigest()[0:12]
 
 def parse_components(project_folder):
   return yaml.load(open(path.join(project_folder, 'components.yaml')))
